@@ -62,7 +62,7 @@ export const useAuth = () => {
       onSuccess: (data) => {
         console.log(data);
         message.success("User registered successfully");
-        navigate("/login");
+        navigate("/signin");
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (error: any) => {

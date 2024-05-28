@@ -6,8 +6,7 @@ const VITE_PROD_BASE_URL = import.meta.env.VITE_PROD_BASE_URL;
 const VITE_CURRENT_ENV = import.meta.env.VITE_CURRENT_ENV;
 export const api = axios.create({
   withCredentials: false,
-  baseURL:
-    VITE_CURRENT_ENV === "local" ? VITE_LOCAL_BASE_URL : VITE_PROD_BASE_URL,
+  baseURL: "https://chatapp-backend-krr5.onrender.com",
   timeout: 80000,
 });
 

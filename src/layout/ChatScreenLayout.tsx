@@ -32,7 +32,15 @@ const ChatScreenLayout: React.FC<{
   return (
     <Layout className="h-screen overflow-hidden">
       <Sider
-        width={350}
+        width={
+          collapsed
+            ? "0px"
+            : window.innerWidth > 1024
+            ? "256px"
+            : window.innerWidth > 768
+            ? "200px"
+            : "150px"
+        }
         trigger={null}
         collapsible
         collapsed={collapsed}
