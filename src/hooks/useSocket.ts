@@ -14,13 +14,14 @@ const useSocket = (conversationId: string) => {
     socketService.initSocket();
 
     socketService.joinConversation(conversationId);
-    setMessages([]);
+    // setMessages([]);
 
     socketService.onNewMessage((newMessage: Message) => {
       console.log("new message is", newMessage);
       if (newMessage.conversationId === conversationId) {
         console.log("new message is", newMessage);
         setMessages((prev) => [...prev, newMessage]);
+        console.log("messages", messages);
       }
     });
 
@@ -34,8 +35,12 @@ const useSocket = (conversationId: string) => {
     return () => {
       socketService.leaveConversation(conversationId);
     };
-  }, [conversationId]);
+  }, [conversationId, messages, status]);
 
+  useEffect(() => {
+    console.log("Updated messages:", messages);
+  }, [messages]);
+  console.log("messages(1)", messages);
   return {
     sendMessage: socketService.sendMessage,
     messages,

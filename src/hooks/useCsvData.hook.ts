@@ -1,18 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import Papa from "papaparse";
 
 export const useCsvData = (csvUrl: string) => {
-  // eslint-disable-next-line
   const [data, setData] = useState<{ [key: string]: any }[]>([]);
   const [columns, setColumns] = useState<
     {
       title: string;
       dataIndex: string;
-      // eslint-disable-next-line
       sorter: (a: any, b: any) => number;
       filterMultiple: boolean;
-      // eslint-disable-next-line
       onFilter: (value: any, record: any) => boolean;
+      filters?: { text: string; value: string }[];
     }[]
   >([]);
   const [loading, setLoading] = useState(false);
@@ -30,13 +29,20 @@ export const useCsvData = (csvUrl: string) => {
         Papa.parse(csv, {
           header: true,
           complete: (results) => {
-            // eslint-disable-next-line
-            setData(results.data as { [key: string]: any }[]);
-            setColumns(
-              Object.keys(results.data[0] as object).map((key) => ({
+            const parsedData = results.data as { [key: string]: any }[];
+            setData(parsedData);
+
+            // Generate column definitions with filters
+            const columnDefinitions = Object.keys(parsedData[0]).map((key) => {
+              // Extract unique values for the column to use as filters
+              const uniqueValues = Array.from(
+                new Set(parsedData.map((item) => item[key]))
+              );
+
+              return {
                 title: key.charAt(0).toUpperCase() + key.slice(1),
                 dataIndex: key,
-                sorter: (a, b) => {
+                sorter: (a: any, b: any) => {
                   const valA = a[key];
                   const valB = b[key];
                   if (typeof valA === "string" && typeof valB === "string") {
@@ -49,9 +55,18 @@ export const useCsvData = (csvUrl: string) => {
                     : 0;
                 },
                 filterMultiple: true,
-                onFilter: (value, record) => record[key].indexOf(value) === 0,
-              }))
-            );
+                onFilter: (value: string | number, record: any) => {
+                  const recordValue = record[key];
+                  return (
+                    recordValue !== undefined &&
+                    recordValue.indexOf(value) === 0
+                  );
+                },
+                filters: uniqueValues.map((value) => ({ text: value, value })),
+              };
+            });
+
+            setColumns(columnDefinitions);
             setLoading(false);
           },
         });
