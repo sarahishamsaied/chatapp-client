@@ -6,6 +6,7 @@ import { useCsvData } from "../hooks/useCsvData.hook";
 
 const MessageItem = ({ senderId, sender, body, file, createdAt }: Message) => {
   const currentUser = useAppSelector((state) => state.auth.userId);
+
   const isSender = senderId === currentUser;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data, columns, loading } = useCsvData(file && file[0]);
@@ -13,7 +14,6 @@ const MessageItem = ({ senderId, sender, body, file, createdAt }: Message) => {
   const getFileType = (url: string) => url.split(".").pop();
 
   const isLink = (string: string) => {
-    // Test if http, https, or www is in the string
     const regex = new RegExp(/^(http|https|www\.)/);
     return regex.test(string);
   };
