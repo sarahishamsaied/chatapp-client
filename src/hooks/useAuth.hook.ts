@@ -67,7 +67,7 @@ export const useAuth = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (error: any) => {
         console.log(error);
-        message.error(`Error registering user ${error.data.message}`);
+        message.error(`Error registering user ${error.response.data.message}`);
       },
     }
   );
