@@ -7,9 +7,10 @@ const VITE_LOCAL_BASE_URL = import.meta.env.VITE_LOCAL_BASE_URL;
 const VITE_PROD_BASE_URL = import.meta.env.VITE_PROD_BASE_URL;
 const VITE_CURRENT_ENV = import.meta.env.VITE_CURRENT_ENV;
 export const initSocket = () => {
-  console.log("hello");
   socket = io(
-    VITE_CURRENT_ENV === "local" ? VITE_LOCAL_BASE_URL : VITE_PROD_BASE_URL
+    VITE_CURRENT_ENV === "development"
+      ? VITE_LOCAL_BASE_URL
+      : VITE_PROD_BASE_URL
   );
   console.log(socket);
   console.log("Connecting socket...");
@@ -18,6 +19,15 @@ export const initSocket = () => {
 export const disconnectSocket = () => {
   console.log("Disconnecting socket...");
   if (socket) socket.disconnect();
+};
+
+export const offUploadingMessage = (
+  cb: (data: {
+    status: "error" | "uploading" | "uploaded";
+    messageId: string;
+  }) => void
+) => {
+  socket.off("loadingStatus", cb);
 };
 
 export const onNewMessage = (cb: (message: Message) => void) => {
@@ -30,6 +40,10 @@ export const joinConversation = (conversationId: string) => {
 
 export const leaveConversation = (conversationId: string) => {
   socket.emit("leaveConversation", { conversationId });
+};
+
+export const offNewMessage = (cb: (message: Message) => void) => {
+  socket.off("newMessage", cb);
 };
 
 export const onUploadingMessage = (

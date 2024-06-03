@@ -5,8 +5,7 @@ import { useParams } from "react-router-dom";
 import { Skeleton, Typography } from "antd";
 import { useGetConversation } from "../hooks/useConversation.hook";
 import { useAppSelector } from "../hooks/redux.hook";
-import { Fragment } from "react/jsx-runtime";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Message } from "../types/Message";
 import * as socketService from "../api/services/socket.service";
 
@@ -16,42 +15,55 @@ export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
 
   console.log(userId);
-  //   const user = useAppSelector((state) => state.auth);
 
   useEffect(() => {
+    console.log("conversationId", id);
     socketService.initSocket();
 
     socketService.joinConversation(id as string);
-    // setMessages([]);
+    setMessages([]);
 
-    socketService.onNewMessage((newMessage: Message) => {
-      console.log("new message is", newMessage);
+    const handleNewMessage = (newMessage: Message) => {
       if (newMessage.conversationId === id) {
         console.log("new message is", newMessage);
         setMessages((prev) => [...prev, newMessage]);
-        console.log("messages", messages);
       }
-    });
+    };
+
+    socketService.onNewMessage(handleNewMessage);
 
     return () => {
       socketService.leaveConversation(id as string);
+      socketService.offNewMessage(handleNewMessage);
     };
   }, [id]);
 
-  console.log("messssssssages", messages);
+  console.log("messages", messages);
+
   useEffect(() => {
     console.log("CHAT SCREEN Updated messages array:", messages);
   }, [messages]);
 
   const { conversation, isLoading, isError } = useGetConversation(id as string);
+  console.log(conversation);
   if (isError)
     return (
-      <Typography.Text type="danger">
-        Error fetching conversation
-      </Typography.Text>
+      <ChatScreenLayout>
+        <Typography.Text type="danger">
+          Error fetching conversation
+        </Typography.Text>
+      </ChatScreenLayout>
     );
   return (
-    <ChatScreenLayout>
+    <ChatScreenLayout
+      participants={
+        (conversation &&
+          conversation?.users.map(
+            (participant: { username: string }) => participant.username
+          )) ||
+        []
+      }
+    >
       {isLoading ? (
         <Skeleton active />
       ) : (

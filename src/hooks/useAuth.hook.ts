@@ -1,12 +1,13 @@
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { login, signUp } from "../api/services/auth.service";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "./redux.hook";
-import { setUser } from "../redux/features/authSlice";
+import { logout, setUser } from "../redux/features/authSlice";
 import { jwtDecode } from "jwt-decode";
 
 export const useAuth = () => {
+  const queryClient = useQueryClient();
   const decodeToken = (token: string) => {
     try {
       return jwtDecode(token);
@@ -72,10 +73,17 @@ export const useAuth = () => {
     }
   );
 
+  const logoutUser = () => {
+    dispatch(logout());
+    queryClient.clear();
+    navigate("/signin");
+  };
+
   return {
     login: signin.mutate,
     isLoginLoading: signin.isLoading,
     register: register.mutate,
     isRegisterLoading: register.isLoading,
+    logout: logoutUser,
   };
 };

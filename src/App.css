@@ -1,7 +1,0 @@
-.animate__animated {
-  animation-duration: 1s;
-  animation-fill-mode: both;
-}
-.animate__fadeOut {
-  animation-name: fadeOut;
-}

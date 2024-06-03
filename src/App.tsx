@@ -21,7 +21,6 @@ function App() {
     <>
       <QueryClientProvider client={queryClient}>
         <ConfigProvider
-          prefixCls="my-antd"
           theme={{
             token: currentTheme === "light" ? light : dark,
           }}

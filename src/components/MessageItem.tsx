@@ -3,6 +3,7 @@ import { Typography, Image, Button, Modal, Table, Popover } from "antd";
 import { useAppSelector } from "../hooks/redux.hook";
 import { Message } from "../types/Message";
 import { useCsvData } from "../hooks/useCsvData.hook";
+import fallbackImg from "../assets/150.png";
 
 const MessageItem = ({ senderId, sender, body, file, createdAt }: Message) => {
   const currentUser = useAppSelector((state) => state.auth.userId);
@@ -56,7 +57,14 @@ const MessageItem = ({ senderId, sender, body, file, createdAt }: Message) => {
           {file &&
             file[0] &&
             (getFileType(file[0]) !== "csv" ? (
-              <Image src={file[0]} />
+              <Image
+                fallback={fallbackImg}
+                src={file[0]}
+                alt={`
+              ${sender?.username} sent a file
+              `}
+                className=" max-w-[500px] h-auto"
+              />
             ) : (
               <Button
                 type="text"
@@ -81,7 +89,7 @@ const MessageItem = ({ senderId, sender, body, file, createdAt }: Message) => {
       </Typography.Paragraph>
       <Modal
         centered
-        width={window.innerWidth - 600}
+        width={window.innerWidth - 300}
         title="CSV Preview"
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}

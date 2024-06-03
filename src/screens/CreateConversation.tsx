@@ -6,16 +6,14 @@ import { useUsers } from "../hooks/useUsers.hook";
 
 function CreateConversation() {
   const [usernames, setUsernames] = useState<string>("");
-  const { createConversation } = useConversation();
+  const { createConversation, refetch } = useConversation();
   const { users } = useUsers();
 
-  // Initialize availableUsernames with an empty array and populate it once users are available
   const [availableUsernames, setAvailableUsernames] = useState<
     { value: string; label: string }[]
   >([]);
 
   useEffect(() => {
-    // Ensure users data is loaded before mapping over it
     if (users) {
       const initialUsernames = users.map((user: { username: string }) => ({
         value: user.username,
@@ -23,7 +21,7 @@ function CreateConversation() {
       }));
       setAvailableUsernames(initialUsernames);
     }
-  }, [users]); // Run this effect whenever the users data changes
+  }, [users]);
 
   useEffect(() => {
     const mentionedUsernames = usernames
@@ -49,6 +47,7 @@ function CreateConversation() {
       usernames: mentions,
       isGroup: mentions.length > 1,
     });
+    refetch();
   };
 
   return (

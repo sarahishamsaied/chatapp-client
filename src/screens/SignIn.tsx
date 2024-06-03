@@ -13,6 +13,7 @@ function SignIn() {
       password: values.password,
     });
   };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -22,28 +23,30 @@ function SignIn() {
         transition={{ duration: 0.5 }}
       >
         <HomeLayout>
-          <Row justify="center" className="w-full ">
+          <Row justify="center" className="w-full">
             <Col span={24}>
               <Typography.Title level={2}>Sign In</Typography.Title>
             </Col>
             <Col span={24}>
               <Form layout="vertical" onFinish={handleFinish}>
                 <Form.Item
-                  label="Email or username"
-                  name={"email"}
+                  label="Email"
+                  name="email"
                   rules={[
                     { required: true, message: "Please input your email!" },
                     { type: "email", message: "Please enter a valid email" },
                   ]}
+                  validateTrigger={["onChange", "onBlur"]}
                 >
                   <Input placeholder="Enter your Email" />
                 </Form.Item>
                 <Form.Item
                   label="Password"
-                  name={"password"}
+                  name="password"
                   rules={[
                     { required: true, message: "Please input your password!" },
                   ]}
+                  validateTrigger={["onChange", "onBlur"]}
                 >
                   <Input.Password placeholder="Enter your password" />
                 </Form.Item>

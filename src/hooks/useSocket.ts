@@ -11,10 +11,11 @@ const useSocket = (conversationId: string) => {
   >("idle");
 
   useEffect(() => {
+    console.log("conversationId", conversationId);
     socketService.initSocket();
 
     socketService.joinConversation(conversationId);
-    // setMessages([]);
+    setMessages([]);
 
     socketService.onNewMessage((newMessage: Message) => {
       console.log("new message is", newMessage);
@@ -35,7 +36,7 @@ const useSocket = (conversationId: string) => {
     return () => {
       socketService.leaveConversation(conversationId);
     };
-  }, [conversationId, messages, status]);
+  }, [conversationId]);
 
   useEffect(() => {
     console.log("Updated messages:", messages);
